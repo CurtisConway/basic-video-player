@@ -1,0 +1,26 @@
+{
+  "name": "basic-video-player",
+  "version": "0.0.1",
+  "description": "A custom HTML5 Video Player extending the basic-video API with rich, accessible controls.",
+  "main": "index.js",
+  "dependencies": {
+    "basic-video": "^0.1.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.28.4",
+    "webpack-cli": "^3.2.1"
+  },
+  "scripts": {
+    "bundle": "node_modules/.bin/webpack --config=webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CurtisConway/basic-video-player.git"
+  },
+  "author": "Curtis Conway",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CurtisConway/basic-video-player/issues"
+  },
+  "homepage": "https://github.com/CurtisConway/basic-video-player#readme"
+}
