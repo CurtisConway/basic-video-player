@@ -1,17 +1,36 @@
 {
   "name": "basic-video-player",
+  "sideEffects": false,
   "version": "0.0.1",
   "description": "A custom HTML5 Video Player extending the basic-video API with rich, accessible controls.",
   "main": "index.js",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.12",
+    "@fortawesome/free-solid-svg-icons": "^5.6.3",
     "basic-video": "^0.1.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-modules-amd": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/register": "^7.0.0",
+    "@babel/runtime": "^7.2.0",
+    "babel-loader": "^8.0.5",
+    "babel-minify-webpack-plugin": "^0.3.1",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^2.1.0",
+    "dart-sass": "^1.16.0",
+    "mini-css-extract-plugin": "^0.5.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "uglifyjs-webpack-plugin": "^2.1.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
   },
   "scripts": {
-    "bundle": "node_modules/.bin/webpack --config=webpack.config.js"
+    "bundle": "node_modules/.bin/webpack --config=webpack.config.js --mode=development",
+    "watch": "node_modules/.bin/webpack --config=webpack.config.js --mode=development --watch",
+    "build": "node_modules/.bin/webpack --config=webpack.config.js --mode=production --optimize-minimize"
   },
   "repository": {
     "type": "git",

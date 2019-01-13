@@ -1,4 +1,10 @@
 import BasicVideo from 'basic-video/src/basic-video.js';
+import './icons.js';
+
+if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     const mediaElement = document.getElementById('player');
@@ -21,34 +27,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 label: '480'
             },
         ],
-        hlsManifestUrl: 'https://d292x7cpdimrbp.cloudfront.net/video/video.m3u8'
+        // hlsManifestUrl: 'https://d292x7cpdimrbp.cloudfront.net/video/video.m3u8'
     });
-    const videoProgress = document.getElementById('progress');
-    const playbackRateSelector = document.getElementById('rate');
-    const playbackSourceSelector = document.getElementById('sources');
-    const currentTimeDisplay = document.getElementById('currentTime');
-    let currentTime = 0;
+    const videoProgress = document.getElementById('bv__progress');
+    const playbackRateSelector = document.getElementById('bv__rate');
+    const playbackSourceSelector = document.getElementById('bv__sources');
+    const currentTimeDisplay = document.getElementById('bv__currentTime');
+    const durationDisplay = document.getElementById('bv__duration');
 
     document.body.addEventListener('click', event => {
         const elementClicked = event.target;
 
-        if(elementClicked.getAttribute('id') === 'play'){
-            basicVideo.play();
+        if(elementClicked.matches('#bv__play__pause')){
+            if(basicVideo.isPlaying){
+                basicVideo.pause();
+                elementClicked.classList.remove('bv__playing');
+            }
+            else {
+                basicVideo.play();
+                elementClicked.classList.add('bv__playing');
+            }
         }
-        if(elementClicked.getAttribute('id') === 'pause'){
+        if(elementClicked.matches('#bv__pause')){
             basicVideo.pause();
         }
-        if(elementClicked.getAttribute('id') === 'forward'){
-            basicVideo.currentTime += 1;
+        if(elementClicked.matches('#bv__forward')){
+            basicVideo.currentTime += 10;
         }
-        if(elementClicked.getAttribute('id') === 'backward'){
-            basicVideo.currentTime -= 1;
+        if(elementClicked.matches('#bv__backward')){
+            basicVideo.currentTime -= 10;
         }
     });
+
+    basicVideo.MediaElement.controls = false;
 
     basicVideo.MediaElement.addEventListener('timeupdate', event => {
         videoProgress.setAttribute('value', basicVideo.currentProgress * 100);
         currentTimeDisplay.innerHTML = Math.floor(basicVideo.currentTime);
+        durationDisplay.innerHTML = basicVideo.totalDuration;
     });
 
     playbackRateSelector.addEventListener('change', event => {
@@ -56,6 +72,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     basicVideo.MediaElement.addEventListener('init', event => {
+
+        setTimeout(() => {
+            document.querySelector('.bv__container').classList.remove('bv__loading');
+        }, 200);
+
         basicVideo.playbackQualities.forEach(source => {
             let option = document.createElement('option');
             option.setAttribute('value', source.src);
