@@ -21,6 +21,7 @@
   width: 100%;
   padding-bottom: 56.25%;
   position: relative;
+  overflow: hidden;
 }
 .bv__container.bv__loading .bv__loading_animation {
   visibility: visible;
@@ -36,16 +37,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   z-index: 1;
+}
+
+.bv__relative {
+  position: relative;
 }
 
 .bv__loading_animation {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
   bottom: 0;
+  right: 0;
   background: rgba(0, 0, 0, 0.2);
   z-index: 5;
   font-size: 64px;
@@ -68,9 +73,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
   z-index: 2;
-  padding-top: 25px;
+  padding: 25px 5px 0;
   visibility: visible;
   opacity: 1;
 }
@@ -103,8 +108,97 @@
   display: none;
 }
 
-.bv__hidden {
+#bv__volume__button.muted .fa-volume-mute {
+  display: inline-block !important;
+}
+#bv__volume__button.muted .fa-volume-up {
   display: none;
+}
+#bv__volume__button.low .fa-volume-down {
+  display: inline-block;
+}
+#bv__volume__button.low .fa-volume-up {
+  display: none;
+}
+#bv__volume__button .fa-volume-mute, #bv__volume__button .fa-volume-down {
+  display: none;
+}
+
+#bv__volume:hover .bv__range {
+  transform: scaleX(1);
+}
+
+.bv__range {
+  position: relative;
+  width: 100px;
+  box-sizing: border-box;
+  transform: scaleX(0);
+  transform-origin: 0 0;
+  transition: transform 0.2s ease-in-out;
+}
+.bv__range .bv__range__container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.bv__range .bv__range__rail {
+  height: 5px;
+  border-radius: 2px;
+  width: 100%;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
+}
+.bv__range .bv__range__handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 2px;
+  background: #242424;
+  width: 0;
+}
+.bv__range .bv__range__handle:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%);
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: #242424;
+}
+.bv__range input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  max-width: 100%;
+  margin: 0;
+  z-index: 1;
+  opacity: 0;
+}
+
+#bv__settings__drawer {
+  position: absolute;
+  bottom: 100%;
+  right: 5px;
+  width: 160px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.bv__hidden {
+  display: none !important;
 }
 
 [class^=bv__flex-] {
@@ -117,6 +211,7 @@
 
 .bv__flex-column {
   flex-direction: column;
+  display: flex;
 }
 
 .bv__flex-grow {
@@ -137,8 +232,52 @@
   padding: 5px;
 }
 
-progress {
+.bv__aside {
+  display: flex;
+}
+
+.bv__text {
+  color: #fff;
+  font-family: "Arial", sans-serif;
+}
+
+.bv__rate__group {
+  margin-bottom: 10px;
+}
+
+.bv__progress-bar {
   width: 100%;
+  background: #fff;
+  height: 10px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.bv__progress-bar span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #242424;
+  border-radius: 2px;
+  transform: translateX(-100%);
+  z-index: 1;
+  transition: transform 0.1s;
+}
+.bv__progress-bar progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  z-index: -1;
+}
+
+#bv__current__buffered {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s;
 }
 
 .loader {

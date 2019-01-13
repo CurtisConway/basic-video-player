@@ -40,7 +40,7 @@
         <div class="bv__controls bv__flex-column">
             <div class="bv__flex-row">
                 <div class="bv__flex-column bv__flex-auto bv__pad">
-                    <button id="bv__backward" class="bv__button">
+                    <button id="bv__backward" class="bv__button" title="Rewind 10 Seconds">
                         <i class="fas fa-redo fa-flip-horizontal"></i>
                     </button>
                 </div>
@@ -48,40 +48,81 @@
                 <div class="bv__flex-grow"></div>
 
                 <div class="bv__flex-column bv__flex-auto bv__pad">
-                    <button id="bv__forward" class="bv__button">
+                    <button id="bv__forward" class="bv__button" title="Fast Forward 10 Seconds">
                         <i class="fas fa-redo"></i>
                     </button>
                 </div>
             </div>
             <div class="bv__flex-row">
                 <div class="bv__flex-column bv__flex-grow bv__flex-center bv__pad">
-                    <progress id="bv__progress" value="0" max="100"></progress>
+                    <div class="bv__progress-bar">
+                        <span id="bv__current__progress"></span>
+                        <span id="bv__current__buffered"></span>
+                        <progress id="bv__progress" value="0" max="100"></progress>
+                    </div>
                 </div>
             </div>
             <div class="bv__flex-row">
                 <div class="bv__flex-column bv__flex-auto bv__pad">
-                    <button id="bv__play__pause" class="bv__button">
+                    <button id="bv__play__pause" class="bv__button" title="Play">
                         <i class="fas fa-play"></i>
                         <i class="fas fa-pause"></i>
                     </button>
                 </div>
 
-                <div class="bv__flex-column bv__flex-auto bv__pad">
-                    <span id="bv__currentTime" class="bv__span"></span>
-                    <span id="bv__duration" class="bv__span"></span>
+                <div class="bv__flex-column bv__flex-auto bv__flex-center bv__pad">
+                    <div class="bv__flex-row">
+                        <span id="bv__currentTime" class="bv__text bv__pad">00:00</span>
+                        <span class="bv__text bv__pad">/</span>
+                        <span id="bv__duration" class="bv__text bv__pad">00:00</span>
+                    </div>
                 </div>
 
                 <div class="bv__flex-grow"></div>
 
-                <div class="bv__flex-column bv__flex-auto bv__pad">
-                    <button id="bv__volume" class="bv__button">
-                        <i class="fas fa-volume-up"></i>
-                    </button>
+                <div id="bv__volume" class="bv__flex-column bv__flex-auto">
+                    <div class="bv__flex-row">
+                        <div class="bv__flex-column bv__pad bv__flex-center">
+                            <div class="bv__range">
+                                <div class="bv__range__container">
+                                    <div class="bv__range__rail">
+                                        <span class="bv__range__handle"></span>
+                                    </div>
+                                </div>
+                                <input id="bv__volume__range" type="range" min="0" max="100" value="50">
+                            </div>
+                        </div>
+                        <div class="bv__column bv__pad">
+                            <button id="bv__volume__button" class="bv__button">
+                                <i class="fas fa-volume-up"></i>
+                                <i class="fas fa-volume-down"></i>
+                                <i class="fas fa-volume-mute"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="bv__flex-column bv__flex-auto bv__pad">
+                <div class="bv__flex-column bv__flex-auto bv__pad bv__relative">
                     <button id="bv__settings" class="bv__button">
                         <i class="fas fa-cog"></i>
                     </button>
+
+                    <aside id="bv__settings__drawer" class="bv__aside bv__flex-column bv__pad bv__hidden">
+                        <div class="bv__rate__group bv__flex-column">
+                            <label for="bv__rate" class="bv__text">Playback Rate:</label>
+                            <select id="bv__rate" class="bv__select">
+                                <option value="0.5">0.5</option>
+                                <option value="0.75">0.75</option>
+                                <option value="1" selected>1</option>
+                                <option value="1.25">1.25</option>
+                                <option value="1.5">1.5</option>
+                            </select>
+                        </div>
+
+                        <div class="bv__sources__group bv__flex-column">
+                            <label for="bv__sources" class="bv__text">Quality:</label>
+                            <select id="bv__sources" class="bv__select"></select>
+                        </div>
+                    </aside>
                 </div>
 
                 <div class="bv__flex-column bv__flex-auto bv__pad">
@@ -90,21 +131,6 @@
                     </button>
                 </div>
             </div>
-
-
-            <aside id="bv__settings_drawer" class="bv__aside bv__hidden">
-                <label for="bv__rate">Playback Rate:</label>
-                <select id="bv__rate" class="bv__select">
-                    <option value="0.5">0.5</option>
-                    <option value="0.75">0.75</option>
-                    <option value="1" selected>1</option>
-                    <option value="1.25">1.25</option>
-                    <option value="1.5">1.5</option>
-                </select>
-
-                <label for="bv__rate">Quality:</label>
-                <select id="bv__sources" class="bv__select"></select>
-            </aside>
         </div>
     </div>
 </div>
