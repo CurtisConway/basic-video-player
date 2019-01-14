@@ -1,5 +1,5 @@
 import BasicVideo from 'basic-video/src/basic-video.js';
-import './icons.js';
+// import './icons.js';
 
 if (!Element.prototype.matches) {
     Element.prototype.matches = Element.prototype.msMatchesSelector ||
