@@ -96,7 +96,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 100);
 
     setInterval(() => {
-        videoBufferedRail.style.transform = 'translateX(-' + (100 - basicVideo.buffered.end(0)) + '%)';
+        if(basicVideo.buffered.length){
+            videoBufferedRail.style.transform = 'translateX(-' + (100 - basicVideo.buffered.end(0)) + '%)';
+        }
     }, 250);
 
     playbackRateSelector.addEventListener('change', event => {
