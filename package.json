@@ -1,7 +1,7 @@
 {
   "name": "basic-video-player",
   "sideEffects": false,
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A custom HTML5 Video Player extending the basic-video API with rich, accessible controls.",
   "main": "index.js",
   "dependencies": {
