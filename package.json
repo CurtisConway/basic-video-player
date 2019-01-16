@@ -7,7 +7,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
     "@fortawesome/free-solid-svg-icons": "^5.6.3",
-    "basic-video": "^0.1.2"
+    "basic-video": "^0.1.2",
+    "screenfull": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

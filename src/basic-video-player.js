@@ -1,4 +1,5 @@
 import BasicVideo from 'basic-video/src/basic-video.js';
+import Screenfull from 'screenfull';
 // import './icons.js';
 
 if (!Element.prototype.matches) {
@@ -29,7 +30,9 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         hlsManifestUrl: 'https://d292x7cpdimrbp.cloudfront.net/video/video.m3u8'
     });
+    const playPauseButton = document.getElementById('bv__play__pause');
     const videoProgress = document.getElementById('bv__progress');
+    const videoTimeRail = document.querySelector('.bv__progress__bar');
     const videoProgressRail = document.getElementById('bv__current__progress');
     const videoBufferedRail = document.getElementById('bv__current__buffered');
     const playbackRateSelector = document.getElementById('bv__rate');
@@ -41,6 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const volumeTimeRail = document.querySelector('.bv__range__handle');
     const settingsButton = document.getElementById('bv__settings');
     const settingsDrawer = document.getElementById('bv__settings__drawer');
+    const videoContainerElement = document.querySelector('.bv__container');
+    let progressInterval;
 
     document.addEventListener('click', event => {
         const elementClicked = event.target;
@@ -48,13 +53,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if(elementClicked.matches('#bv__play__pause')){
             if(basicVideo.isPlaying){
                 basicVideo.pause();
-                elementClicked.classList.remove('bv__playing');
-                elementClicked.setAttribute('title', 'Play');
             }
             else {
                 basicVideo.play();
-                elementClicked.classList.add('bv__playing');
-                elementClicked.setAttribute('title', 'Pause');
             }
         }
         if(elementClicked.matches('#bv__forward')){
@@ -72,7 +73,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if(elementClicked.matches('#bv__settings')){
-            settingsDrawer.classList.toggle('bv__hidden');
+
+            if(settingsDrawer.classList.contains('bv__hidden')){
+                fadeInRight(settingsDrawer);
+            }
+            else {
+                fadeOutRight(settingsDrawer);
+            }
+        }
+
+        if(elementClicked.matches('#bv__fullscreen')){
+            console.log(Screenfull.enabled);
+            if(Screenfull.enabled){
+                Screenfull.toggle(videoContainerElement);
+            }
         }
         // else {
         //     settingsDrawer.classList.add('bv__hidden');
@@ -83,17 +97,86 @@ document.addEventListener('DOMContentLoaded', function () {
 
     basicVideo.MediaElement.addEventListener('timeupdate', event => {
         videoProgress.setAttribute('value', basicVideo.currentProgress * 100);
-        // videoProgressRail.style.transform = 'translateX(-' + (100 - (basicVideo.currentProgress * 100)) + '%)';
+
         currentTimeDisplay.innerHTML = parseTime(Math.floor(basicVideo.currentTime));
         durationDisplay.innerHTML = parseTime(basicVideo.totalDuration);
     });
 
-    setInterval(() => {
-        if(basicVideo.isPlaying){
-            videoProgressRail.style.transform = 'translateX(-' + (100 - (basicVideo.currentProgress * 100)) + '%)';
-        }
+    function setProgressInterval(){
+        progressInterval = setInterval(() => {
+            if(basicVideo.isPlaying){
+                videoProgressRail.style.transform = 'translateX(-' + (100 - (basicVideo.currentProgress * 100)) + '%)';
+            }
+        }, 100);
+    }
 
-    }, 100);
+    setProgressInterval();
+
+    let mouseDown = false;
+    // Video Time Rail Mouse Down
+    ['dragstart', 'dragend'].forEach(eventName => {
+        videoTimeRail.addEventListener(eventName, event => {
+            event.preventDefault();
+            return false;
+        });
+    });
+
+    ['mousedown', 'touchstart'].forEach(eventName => {
+        videoTimeRail.addEventListener(eventName, event => {
+            basicVideo.pause();
+            clearInterval(progressInterval);
+
+            videoTimeRail.classList.add('active');
+
+            ['mousemove', 'touchmove'].forEach(eventName => {
+                document.addEventListener(eventName, timeRailMouseMoveEventListener)
+            });
+
+            ['mouseup', 'touchend'].forEach(eventName => {
+                document.addEventListener(eventName, timeRailMouseUpEventListener);
+            });
+        });
+    });
+
+    basicVideo.MediaElement.addEventListener('play', event => {
+        playPauseButton.classList.add('bv__playing');
+        playPauseButton.setAttribute('title', 'Pause');
+    });
+
+    basicVideo.MediaElement.addEventListener('pause', event => {
+        playPauseButton.classList.remove('bv__playing');
+        playPauseButton.setAttribute('title', 'Play');
+    });
+
+    // Video Time Rail Mouse Up
+    function timeRailMouseUpEventListener(event) {
+        const mouseOffsetPercentage = getTimeRailMouseEventOffsetPercentage(event) / 100;
+
+        basicVideo.currentTime = Math.floor(basicVideo.totalDuration * mouseOffsetPercentage);
+        basicVideo.play();
+        setProgressInterval();
+
+        videoTimeRail.classList.remove('active');
+
+        ['mousemove', 'touchmove'].forEach(eventName => {
+            document.removeEventListener(eventName, timeRailMouseMoveEventListener)
+        });
+
+        ['mouseup', 'touchend'].forEach(eventName => {
+            document.removeEventListener(eventName, timeRailMouseUpEventListener);
+        });
+    }
+
+    function timeRailMouseMoveEventListener(event){
+        const mouseOffsetPercentage = 100 - getTimeRailMouseEventOffsetPercentage(event);
+
+        videoProgressRail.style.transform = 'translateX(-' + mouseOffsetPercentage + '%)';
+    }
+
+    function getTimeRailMouseEventOffsetPercentage(event){
+        const mouseX = event.clientX || (event.touches[0] ? event.touches[0].clientX : event.changedTouches[0].clientX);
+        return ((mouseX - videoTimeRail.offsetLeft) /  videoTimeRail.clientWidth * 100);
+    }
 
     setInterval(() => {
         if(basicVideo.buffered.length){
@@ -156,6 +239,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+function fadeInRight(element){
+    element.classList.add('bv__animated', 'fadeInRight');
+    element.classList.remove('bv__hidden');
+
+    setTimeout(() => {
+        element.classList.remove('bv__animated', 'fadeInRight');
+    }, 400);
+}
+
+function fadeOutRight(element){
+    element.classList.add('bv__animated', 'fadeOutRight');
+
+    setTimeout(() => {
+        element.classList.add('bv__hidden');
+        element.classList.remove('bv__animated', 'fadeOutRight');
+    }, 400);
+}
 
 function parseTime(time){
     const _time = Number(time);

@@ -6,6 +6,7 @@
 .bv__container {
   @include widescreenBox();
   overflow:hidden;
+  background-color:#000;
 
   &.bv__loading {
 
@@ -24,7 +25,7 @@
     left:0;
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit: contain;
     z-index:1;
   }
 }
@@ -165,9 +166,35 @@
   position:absolute;
   bottom:100%;
   right:5px;
-  width:160px;
+  width:200px;
   border-radius:3px;
-  background:rgba(0,0,0,.5);
+  background:#242424;
+  padding:10px;
+}
+
+.bv__input__group {
+  position:relative;
+
+  label {
+    font-size:16px;
+  }
+
+  select {
+    height:35px;
+    font-size:16px;
+    background:none;
+    color:white;
+    font-family: 'Open Sans', 'Arial', sans-serif;
+    font-weight:300;
+
+    option {
+      color:#000;
+    }
+  }
+}
+
+.bv__select__column {
+  flex:0 0 80px;
 }
 
 // Hidden
@@ -182,6 +209,7 @@
 
 .bv__flex-row {
   flex-direction:row;
+  display:flex;
 }
 .bv__flex-column {
   flex-direction:column;
@@ -210,7 +238,8 @@
 
 .bv__text {
   color:#fff;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-weight:300;
 }
 
 .bv__rate__group {
@@ -223,7 +252,7 @@
   padding:5px 0;
 }
 
-.bv__progress-bar {
+.bv__progress__bar {
   width:100%;
   background:#fff;
   height:8px;
@@ -232,6 +261,16 @@
   cursor:pointer;
   transform:scaleY(0.5);
   transition:transform .1s ease-in-out;
+
+  &.active {
+    transform:scaleY(1);
+    transition-duration:0s;
+
+    #bv__current__progress:after {
+      @include visibilityVisible();
+      transform:translate(50%, -50%) scale(1);
+    }
+  }
 
   &:hover {
     transform:scaleY(1);
@@ -254,8 +293,9 @@
 
   progress {
     @include absoluteCover();
+    pointer-events:none;
     width:100%;
-    z-index:-1;
+    z-index:-20;
     opacity:0;
   }
 }
@@ -316,5 +356,12 @@
   .square-4 {
     transform: rotate(180deg);
     animation-direction: reverse;
+  }
+}
+
+
+@media only screen and (max-width: 768px) {
+  #bv__volume {
+    display:none;
   }
 }
