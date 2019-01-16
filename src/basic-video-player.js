@@ -175,7 +175,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getTimeRailMouseEventOffsetPercentage(event){
         const mouseX = event.clientX || (event.touches[0] ? event.touches[0].clientX : event.changedTouches[0].clientX);
-        return ((mouseX - videoTimeRail.offsetLeft) /  videoTimeRail.clientWidth * 100);
+
+
+        function getPosition(el) {
+            const positions = {
+                x: 0,
+                y: 0
+            };
+
+            while (el) {
+                if (el.tagName === "BODY") {
+                    // deal with browser quirks with body/window/document and page scroll
+                    let xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+                    let yScroll = el.scrollTop || document.documentElement.scrollTop;
+
+                    positions['x'] += (el.offsetLeft - xScroll + el.clientLeft);
+                    positions['y'] += (el.offsetTop - yScroll + el.clientTop);
+                } else {
+                    // for all other non-BODY elements
+                    positions['x'] += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+                    positions['y'] += (el.offsetTop - el.scrollTop + el.clientTop);
+                }
+
+                el = el.offsetParent;
+            }
+            return positions;
+        }
+
+        return ((mouseX - getPosition(videoTimeRail).x) /  videoTimeRail.clientWidth * 100);
     }
 
     setInterval(() => {
