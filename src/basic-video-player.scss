@@ -248,8 +248,19 @@
 
 .bv__progress__column {
   margin:0 5px;
-  overflow:hidden;
+  position:relative;
   padding:5px 0;
+  justify-content:flex-end;
+  cursor:pointer;
+
+  &:hover, &.active {
+    #bv__hover__time {
+      @include visibilityVisible();
+    }
+    .bv__progress__bar {
+      transform:scaleY(1);
+    }
+  }
 }
 
 .bv__progress__bar {
@@ -260,33 +271,16 @@
   position:relative;
   cursor:pointer;
   transform:scaleY(0.5);
-  transition:transform .1s ease-in-out;
-
-  &.active {
-    transform:scaleY(1);
-    transition-duration:0s;
-
-    #bv__current__progress:after {
-      @include visibilityVisible();
-      transform:translate(50%, -50%) scale(1);
-    }
-  }
-
-  &:hover {
-    transform:scaleY(1);
-
-    #bv__current__progress:after {
-      @include visibilityVisible();
-      transform:translate(50%, -50%) scale(1);
-    }
-  }
+  will-change:transform;
+  box-sizing:border-box;
   //overflow:hidden;
 
   span {
     @include absoluteCover();
     background-color:#0b76db;
     border-radius:2px;
-    transform:translateX(-100%);
+    transform:scaleX(0);
+    transform-origin:0;
     z-index:1;
     transition:transform .1s;
   }
@@ -302,25 +296,28 @@
 
 #bv__current__progress {
   z-index:2;
-  
-  &:after {
-    content: '';
-    position:absolute;
-    right:0;
-    top:50%;
-    transform:translate(50%, -50%) scale(0.5);
-    height:17px;
-    width:17px;
-    border-radius:50%;
-    background:#0b76db;
-    transition:all .1s ease-in-out;
-    @include visibilityHidden();
-  }
 }
 
 #bv__current__buffered {
   background-color:(rgba(0,0,0,.2));
   transition:transform .25s;
+}
+
+#bv__hover__time {
+  position:absolute;
+  display:flex;
+  bottom:25px;
+  left:0;
+  z-index:10;
+  width:60px;
+  height:30px;
+  margin-left:-30px;
+  background:#242424;
+  border-radius:2px;
+  transition:opacity .3s, visibility .3s;
+  transform-origin:50% 50%;
+  transform:translateX(30px);
+  @include visibilityHidden();
 }
 
 // Loading Animation

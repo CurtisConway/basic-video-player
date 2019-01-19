@@ -5,6 +5,7 @@ import Screenfull from 'screenfull';
 if (!Element.prototype.matches) {
     Element.prototype.matches = Element.prototype.msMatchesSelector ||
         Element.prototype.webkitMatchesSelector;
+
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -30,9 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         hlsManifestUrl: 'https://d292x7cpdimrbp.cloudfront.net/video/video.m3u8'
     });
+
     const playPauseButton = document.getElementById('bv__play__pause');
     const videoProgress = document.getElementById('bv__progress');
-    const videoTimeRail = document.querySelector('.bv__progress__bar');
+    const videoTimeRail = document.querySelector('.bv__progress__column');
     const videoProgressRail = document.getElementById('bv__current__progress');
     const videoBufferedRail = document.getElementById('bv__current__buffered');
     const playbackRateSelector = document.getElementById('bv__rate');
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const settingsButton = document.getElementById('bv__settings');
     const settingsDrawer = document.getElementById('bv__settings__drawer');
     const videoContainerElement = document.querySelector('.bv__container');
+    const hoverTimeElement = document.getElementById('bv__hover__time');
     let progressInterval;
 
     document.addEventListener('click', event => {
@@ -105,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setProgressInterval(){
         progressInterval = setInterval(() => {
             if(basicVideo.isPlaying){
-                videoProgressRail.style.transform = 'translateX(-' + (100 - (basicVideo.currentProgress * 100)) + '%)';
+                videoProgressRail.style.transform = 'scaleX(' + basicVideo.currentProgress + ')';
             }
         }, 100);
     }
@@ -138,6 +141,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    document.addEventListener('mousemove', event => {
+        const mouseOffsetPercentage = getTimeRailMouseEventOffsetPercentage(event) / 100;
+        const durationAtHoverPercentage = basicVideo.totalDuration * mouseOffsetPercentage;
+        const timeRailWidth = videoTimeRail.clientWidth;
+        let pixelAmountToMoveTo = timeRailWidth * mouseOffsetPercentage;
+
+        if(pixelAmountToMoveTo < 30){
+            pixelAmountToMoveTo = 30;
+        }
+        else if(pixelAmountToMoveTo > (timeRailWidth - 30)){
+            pixelAmountToMoveTo = timeRailWidth - 30;
+        }
+
+        hoverTimeElement.innerHTML = parseTime(durationAtHoverPercentage);
+        hoverTimeElement.style.transform = 'translateX(' + pixelAmountToMoveTo + 'px)';
+    });
+
     basicVideo.MediaElement.addEventListener('play', event => {
         playPauseButton.classList.add('bv__playing');
         playPauseButton.setAttribute('title', 'Pause');
@@ -168,9 +188,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function timeRailMouseMoveEventListener(event){
-        const mouseOffsetPercentage = 100 - getTimeRailMouseEventOffsetPercentage(event);
+        const mouseOffsetPercentage = getTimeRailMouseEventOffsetPercentage(event) / 100;
 
-        videoProgressRail.style.transform = 'translateX(-' + mouseOffsetPercentage + '%)';
+        videoProgressRail.style.transform = 'scaleX(' + mouseOffsetPercentage + ')';
     }
 
     function getTimeRailMouseEventOffsetPercentage(event){
@@ -207,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setInterval(() => {
         if(basicVideo.buffered.length){
-            videoBufferedRail.style.transform = 'translateX(-' + (100 - basicVideo.buffered.end(0)) + '%)';
+            videoBufferedRail.style.transform = 'scaleX(' + (basicVideo.buffered.end(0) / 100) + ')';
         }
     }, 250);
 
@@ -243,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setTimeout(() => {
             document.querySelector('.bv__container').classList.remove('bv__loading');
+            durationDisplay.innerHTML = parseTime(basicVideo.totalDuration);
         }, 200);
 
         basicVideo.playbackQualities.forEach(source => {
