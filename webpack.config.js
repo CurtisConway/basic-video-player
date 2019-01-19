@@ -4,7 +4,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
     entry: ['./src/basic-video-player.js', './src/basic-video-player.scss'],
     resolve: {
-        modules: ['node_modules']
+        modules: ['node_modules'],
+        symlinks: true
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -24,7 +25,7 @@ module.exports = {
             use: {
                 loader: 'babel-loader',
                 options: {
-                    presets: ['env'],
+                    presets: ['@babel/preset-env'],
                     plugins: ['@babel/plugin-transform-runtime']
                 }
             }

@@ -1,8 +1,9 @@
 {
   "presets": [
-    ["env",
+    ["@babel/preset-env",
       {
-        "modules": false
+        "modules": false,
+        "symlink": true
       }
     ]
   ]
