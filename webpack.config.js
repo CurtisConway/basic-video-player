@@ -2,7 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: ['./src/basic-video-player.js', './src/basic-video-player.scss'],
+    entry: ['./src/index.js', './src/basic-video-player.scss'],
     resolve: {
         modules: ['node_modules'],
         symlinks: true
