@@ -10,7 +10,7 @@
 
   &.bv__loading {
 
-    .bv__loading_animation {
+    .bv__loading__animation {
       @include visibilityVisible();
     }
 
@@ -35,7 +35,7 @@
 }
 
 // Loading Overlay
-.bv__loading_animation {
+.bv__loading__animation {
   @include absoluteCover();
   background:rgba(0,0,0,.2);
   z-index:5;
@@ -76,6 +76,10 @@
   font-size:20px;
   color:#fff;
   @include visibilityVisible();
+
+  & > * {
+    pointer-events:none;
+  }
 
   &:hover {
     background-color:rgba(0,0,0,.3);
@@ -329,6 +333,9 @@
 .loader {
   width: 100px;
   height: 100px;
+  font-size:10px;
+  text-transform:uppercase;
+  text-align:center;
 
   & > div {
     float: left;

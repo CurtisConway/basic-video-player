@@ -10,6 +10,7 @@
     <style>
         body {
             background-color:#e6e6e6;
+            margin:0;
         }
 
         .container {
@@ -17,8 +18,19 @@
             margin:0 auto;
         }
 
-        .bv__container .bv__button * {
-            pointer-events:none;
+        .video-column {
+            padding:10px;
+            flex:0 0 100%;
+            box-sizing:border-box;
+        }
+        .wrap {
+            flex-wrap:wrap;
+        }
+
+        @media screen and (min-width:768px){
+            .video-column {
+                flex:0 0 50%;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
@@ -26,8 +38,16 @@
 </head>
 <body>
 <div class="container">
-    <div class="bv__container"></div>
+    <div class="bv__flex-row wrap">
+        <div class="bv__flex-column video-column">
+            <div id="player" class="bv__container"></div>
+        </div>
+
+        <div class="bv__flex-column video-column">
+            <div id="player2" class="bv__container"></div>
+        </div>
+    </div>
 </div>
-<script src="./dist/basic-video-player.js" type="module"></script>
+<script src="./dist/basic-video-player.js"></script>
 </body>
 </html>

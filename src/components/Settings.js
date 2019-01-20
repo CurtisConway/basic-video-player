@@ -1,6 +1,9 @@
 import {html} from 'lit-html';
+import { repeat } from 'lit-html/directives/repeat';
 
 export default function Progress(BasicVideo = {}, BVP){
+    const playbackQualities = BasicVideo.playbackQualities || [];
+    const currentPlaybackQuality = BasicVideo.currentPlaybackQuality;
     let settingsDrawer = BVP.settings;
     let settingsDrawerClassList = !settingsDrawer ? 'bv__hidden fadeOutRight' : 'fadeInRight';
 
@@ -19,6 +22,29 @@ export default function Progress(BasicVideo = {}, BVP){
         capture: true
     };
 
+    const setPlaybackRate = {
+        handleEvent(event){
+            BasicVideo.playbackRate = event.target.value;
+        },
+        capture:true
+    };
+
+    const qualitiesOptions = () => html`
+        ${repeat(playbackQualities, (i) => i.label, (i, index) => html`
+            ${i.src === currentPlaybackQuality
+                ? html`<option value="${i.src}" selected>${i.label}</option>`
+                : html `<option value="${i.src}">${i.label}</option>`
+            }
+        `)}
+    `;
+
+    const setPlaybackQuality = {
+        handleEvent(event){
+            BasicVideo.currentPlaybackQuality = event.target.value;
+        },
+        capture:true
+    };
+
     return html`
         <div class="bv__flex-column bv__flex-auto bv__pad bv__relative">
             <button class="bv__settings bv__button" @click="${openSettings}">
@@ -31,10 +57,10 @@ export default function Progress(BasicVideo = {}, BVP){
                 
                 <div class="bv__rate__group bv__input__group bv__flex-row bv__flex-center">
                     <div class="bv__flex-column bv__flex-grow">
-                        <label for="bv__rate" class="bv__text">Playback Rate:</label>
+                        <label class="bv__text">Playback Rate:</label>
                     </div>
                     <div class="bv__flex-column bv__select__column">
-                        <select id="bv__rate" class="bv__select">
+                        <select class="bv__rate bv__select" @change="${setPlaybackRate}">
                             <option value="0.5">0.5</option>
                             <option value="0.75">0.75</option>
                             <option value="1" selected>1</option>
@@ -46,10 +72,13 @@ export default function Progress(BasicVideo = {}, BVP){
 
                 <div class="bv__sources__group bv__input__group bv__flex-row bv__flex-center">
                     <div class="bv__flex-column bv__flex-grow">
-                        <label for="bv__sources" class="bv__text">Quality:</label>
+                        <label class="bv__text">Quality:</label>
                     </div>
-                    <div class="bv__flex-column bv__select__column">
-                        <select id="bv__sources" class="bv__select"></select>
+                    <div class="bv__flex-column bv__select__column" 
+                         @change="${setPlaybackQuality}">
+                        <select class="bv__sources bv__select">
+                           ${qualitiesOptions()}
+                        </select>
                     </div>
                 </div>
             </aside>

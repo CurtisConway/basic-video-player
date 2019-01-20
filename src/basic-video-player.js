@@ -1,5 +1,5 @@
 import BasicVideo from 'basic-video/src/basic-video.js';
-import Screenfull from "screenfull";
+import Screenfull from 'screenfull';
 import {html, render} from 'lit-html';
 import Utils from './utils';
 import Rewind from './components/Rewind';
@@ -16,12 +16,15 @@ export default class BasicVideoPlayer {
     /**
      * Construct a Basic Video Player
      *
-     * @param {HTMLElement|HTMLVideoElement|HTMLAudioElement} element
-     * @param {string} options - The options object to be passed to the BasicVideo instance
+     * @param {HTMLElement|Element} element
+     * @param {string} id - the id of the video element
+     * @param {object} options - The options object to be passed to the BasicVideo instance
      */
-    constructor(element, options){
+    constructor(element, id = 'BasicVideoPlayer', options){
         this.bvContainer = element;
-        this.bvContainer.classList.add('bv__loading');
+        this.bvContainer.classList.add('bv__loading'); // Start the loading state
+        this.videoElementId = id;
+        this.bvControls = null;
         this.currentMouseX = 0;
         this.seeking = false;
         this.settings = false;
@@ -38,9 +41,17 @@ export default class BasicVideoPlayer {
         });
 
         // Listen for all player events and trigger a rerender of any relevant component
-        ['play', 'pause', 'timeupdate', 'init', 'volumechange', 'settings', 'seeking'].forEach(eventName => {
+        [
+            'play',
+            'pause',
+            'timeupdate',
+            'init',
+            'volumechange',
+            'settings',
+            'seeking',
+        ].forEach(eventName => {
             this.basicVideo.MediaElement.addEventListener(eventName, () => {
-                render(this.Controls(this.basicVideo), document.querySelector('.bv__controls'));
+                render(this.Controls(this.basicVideo), this.bvControls);
             })
         });
     }
@@ -52,13 +63,14 @@ export default class BasicVideoPlayer {
      */
     renderBasicVideo(options){
         const videoElement = () => html`
-            <video id="player2" preload="auto"></video>
-            <div class="bv__loading_animation">
-                <div class="loader">
+            <video id="${this.videoElementId}" preload="auto"></video>
+            <div class="bv__loading__animation">
+                <div class="loader bv__text">
                     <div class="square-1"></div>
                     <div class="square-2"></div>
                     <div class="square-3"></div>
                     <div class="square-4"></div>
+                    loading..
                 </div>
             </div>
             <div class="bv__controls bv__flex-column">
@@ -68,7 +80,8 @@ export default class BasicVideoPlayer {
 
         render(videoElement(), this.bvContainer);
 
-        this.basicVideo = new BasicVideo(document.getElementById('player2'), options);
+        this.basicVideo = new BasicVideo(document.getElementById(this.videoElementId), options);
+        this.bvControls = this.bvContainer.querySelector('.bv__controls');
         this.basicVideo.MediaElement.controls = false;
     }
 
