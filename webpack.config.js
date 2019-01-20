@@ -11,7 +11,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: 'basic-video-player.js'
     },
-    // devtool: 'source-map',
+    devtool: 'source-map',
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'basic-video-player.css',
@@ -33,22 +33,22 @@ module.exports = {
         {
             test: /\.scss$/,
             use: [
-                {
-                    loader: 'style-loader'
-                },
-                {
-                    loader: MiniCssExtractPlugin.loader
-                },
+                'style-loader',
+                MiniCssExtractPlugin.loader,
                 {
                     loader: 'css-loader',
+                },
+                {
+                    loader: 'postcss-loader',
                     options: {
-                        sourceMap: true
+                        plugins: [
+                            require('autoprefixer')
+                        ]
                     }
                 },
                 {
                     loader: 'sass-loader',
                     options: {
-                        sourceMap: true,
                         implementation: require("dart-sass")
                     }
                 }
