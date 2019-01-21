@@ -37,3 +37,13 @@ const basicVideoPlayer = new BasicVideoPlayer({
     }
 });
 ```
+
+Props
+---
+
+| Prop                   | Type      | Required | Info |
+|------------------------|-----------|----------|------|
+| element                | Element   |    x     | An html element to mount the player inside of
+| id                     | String    |          | Unique identifier for the video element (required if you plan to have multiple on one page)
+| controls               | Object    |          | Customize which controls to show
+| BasicVideoOptions      | Object    |    x     | The options object to pass to the [BasicVideo](https://github.com/CurtisConway/basic-video) instance
