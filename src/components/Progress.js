@@ -16,22 +16,26 @@ export default function Progress(BasicVideo = {}, BasicVideoPlayer = {}){
 
     const mouseUp = {
         handleEvent(event){
-            const offset = Utils.getTimeRailMouseEventOffsetPercentage(
-                event,
-                BasicVideoPlayer.bvContainer
-            ) / 100;
+            if(event.which === 1){
+                const offset = Utils.getTimeRailMouseEventOffsetPercentage(
+                    event,
+                    BasicVideoPlayer.bvContainer
+                ) / 100;
 
-            BasicVideoPlayer.seeking = false;
-            BasicVideo.currentTime = BasicVideo.totalDuration * offset;
-            BasicVideo.play();
+                BasicVideoPlayer.seeking = false;
+                BasicVideo.currentTime = BasicVideo.totalDuration * offset;
+                BasicVideo.play();
+            }
         },
         capture: true
     };
 
     const mouseDown = {
         handleEvent(event){
-            BasicVideoPlayer.seeking = true;
-            BasicVideo.pause();
+            if(event.which === 1) {
+                BasicVideoPlayer.seeking = true;
+                BasicVideo.pause();
+            }
         },
         capture: true
     };

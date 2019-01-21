@@ -18,22 +18,45 @@ export default class BasicVideoPlayer {
      *
      * @param {HTMLElement|Element} element
      * @param {string} id - the id of the video element
-     * @param {object} options - The options object to be passed to the BasicVideo instance
+     * @param {object} controls
+     * @param {object} BasicVideoOptions - Basic Video object params
      */
-    constructor(element, id = 'BasicVideoPlayer', options){
+    constructor({
+        element,
+        id = 'BasicVideoPlayer',
+        controls = {},
+        BasicVideoOptions
+    }){
         this.bvContainer = element;
         this.bvContainer.classList.add('bv__loading'); // Start the loading state
         this.videoElementId = id;
-        this.bvControls = null;
+        this.bvControls = Object.assign({
+            rewind: true,
+            forward: true,
+            progress: true,
+            playpause: true,
+            timestamps: true,
+            volume: true,
+            settings: true,
+            fullscreen: true
+        }, controls);
+        this.bvControlsComponent = null;
         this.currentMouseX = 0;
         this.seeking = false;
         this.settings = false;
+        this.isMobile = Utils.isMobile().any;
 
-        this.renderBasicVideo(options);
+        this.renderBasicVideo(BasicVideoOptions);
 
         this.trackMousePosition();
 
         this.documentClickEvents();
+
+
+        window.addEventListener('resize', event => {
+            this.isMobile = Utils.isMobile().any;
+            render(this.Controls(this.basicVideo), this.bvControlsComponent);
+        });
 
         // Remove loading state
         this.basicVideo.MediaElement.addEventListener('init', () => {
@@ -51,7 +74,7 @@ export default class BasicVideoPlayer {
             'seeking',
         ].forEach(eventName => {
             this.basicVideo.MediaElement.addEventListener(eventName, () => {
-                render(this.Controls(this.basicVideo), this.bvControls);
+                render(this.Controls(this.basicVideo), this.bvControlsComponent);
             })
         });
     }
@@ -59,7 +82,7 @@ export default class BasicVideoPlayer {
     /**
      * Render the video player
      *
-     * @param {string} options - The options object to be passed to the BasicVideo instance
+     * @param {object} options - The options object to be passed to the BasicVideo instance
      */
     renderBasicVideo(options){
         const videoElement = () => html`
@@ -81,7 +104,7 @@ export default class BasicVideoPlayer {
         render(videoElement(), this.bvContainer);
 
         this.basicVideo = new BasicVideo(document.getElementById(this.videoElementId), options);
-        this.bvControls = this.bvContainer.querySelector('.bv__controls');
+        this.bvControlsComponent = this.bvContainer.querySelector('.bv__controls');
         this.basicVideo.MediaElement.controls = false;
     }
 
@@ -93,9 +116,9 @@ export default class BasicVideoPlayer {
     Controls(BasicVideo){
         return html`
             <div class="bv__flex-row">
-                ${ Rewind(BasicVideo) }
+                ${ this.bvControls.rewind ? Rewind(BasicVideo) : null }
                 ${ Spacer() }
-                ${ Forward(BasicVideo) }
+                ${ this.bvControls.forward ? Forward(BasicVideo) : null }
             </div>
             
             <div class="bv__flex-row">
@@ -103,12 +126,12 @@ export default class BasicVideoPlayer {
             </div>
             
             <div class="bv__flex-row">
-                ${ PlayPause(BasicVideo) }
-                ${ Timestamps(BasicVideo) }
+                ${ this.bvControls.playpause ? PlayPause(BasicVideo) : null }
+                ${ this.bvControls.timestamps ?  Timestamps(BasicVideo) : null }
                 ${ Spacer() }
-                ${ Volume(BasicVideo) }
-                ${ Settings(BasicVideo, this) }
-                ${ Screenfull.enabled ? Fullscreen(this.bvContainer) : null }
+                ${ !this.isMobile && this.bvControls.volume ? Volume(BasicVideo) : null }
+                ${ this.bvControls.settings ?  Settings(BasicVideo, this) : null }
+                ${ Screenfull.enabled &&  this.bvControls.fullscreen ? Fullscreen(this.bvContainer) : null }
             </div>
         `;
     };

@@ -326,6 +326,7 @@
   transition:opacity .3s, visibility .3s;
   transform-origin:50% 50%;
   transform:translateX(30px);
+  pointer-events:none;
   @include visibilityHidden();
 }
 
@@ -365,12 +366,5 @@
   .square-4 {
     transform: rotate(180deg);
     animation-direction: reverse;
-  }
-}
-
-
-@media only screen and (max-width: 768px) {
-  .bv__volume {
-    display:none;
   }
 }
