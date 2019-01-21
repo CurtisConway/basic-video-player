@@ -8,7 +8,7 @@ https://curtisconway.github.io/basic-video-player/
 ```
 
 ```javascript
-import BasicVideoPlayer from './basic-video-player';
+import BasicVideoPlayer from 'basic-video-player';
 
 const videoContainer = document.getElementById('player');
 const basicVideoPlayer = new BasicVideoPlayer({
